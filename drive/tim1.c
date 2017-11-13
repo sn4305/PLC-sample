@@ -5,7 +5,7 @@
 uint8_t bd_arm1_enable=1;
 uint16_t bd_arm1_cnt=0;
 uint8_t bd_arm1_execute=0;
-uint32_t uart_rx_timeout_settime=800;  //updated from 100 to 500ms,to 800ms
+uint32_t uart_rx_timeout_settime=500;  //updated from 100 to 500ms,to 800ms
 uint8_t uart_rx_timeout_enable=0;  
 uint16_t uart_rx_timeout_cnt=0;
 extern uint8_t uart1_handle_enable;
@@ -14,9 +14,9 @@ extern uint8_t uart1_handle_enable;
 void Tim1_Init(void)
 {
     TIM1_TimeBaseInit(16,TIM1_COUNTERMODE_UP,1000,0);
-    TIM1_ARRPreloadConfig(ENABLE);//Ê¹ÄÜ×Ô¶¯ÖØ×°
-    TIM1_ITConfig(TIM1_IT_UPDATE,ENABLE);//Êı¾İ¸üĞÂÖĞ¶Ï
-    TIM1_Cmd(ENABLE);//¿ª¶¨Ê±Æ÷
+    TIM1_ARRPreloadConfig(ENABLE);//ä½¿èƒ½è‡ªåŠ¨é‡è£…
+    TIM1_ITConfig(TIM1_IT_UPDATE,ENABLE);//æ•°æ®æ›´æ–°ä¸­æ–­
+    TIM1_Cmd(ENABLE);//å¼€å®šæ—¶å™¨
 }
 
 void TIM1_ISR_handler(void)
@@ -33,11 +33,13 @@ void TIM1_ISR_handler(void)
     if(uart_rx_timeout_enable==1)
     {
         uart_rx_timeout_cnt++;
-        if(uart_rx_timeout_cnt>=uart_rx_timeout_settime)
+        if(uart_rx_timeout_cnt>=uart_rx_timeout_settime || uart_rx_num > 49)
         {
             uart_rx_timeout_enable=0;
             uart_rx_timeout_cnt=0;
-            uart1_handle_enable=1;           
+            uart1_handle_enable=1;    
+            //added in 11.11 11:57
+            uart_rx_num = 0;
         }
     } 
 }
