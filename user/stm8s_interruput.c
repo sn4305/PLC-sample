@@ -157,7 +157,11 @@ __interrupt void UART1_RX_IRQHandler(void)
     {             
         read_srdr=UART1->SR;
         read_srdr=UART1->DR;
-        uart_rx_data[uart_rx_num++]=UART1_ReceiveData8();
+        //added in 11.11 12:00
+        if(uart_rx_num < 255)
+        {
+          uart_rx_data[uart_rx_num++]=UART1_ReceiveData8();
+        }
     }
 }
 #endif
