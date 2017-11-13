@@ -116,32 +116,41 @@ void reply_to_server(void)
 void UART1_rx_handler(uint8_t *pdata, uint8_t len)
 {
 
-//    uint8_t pdata1[5];
-//    uint8_t s2[3];
-//    s2[0] = 0x04;
-//    s2[1] = my_addr;
-//    s2[2] = 0xFF;
-//    find_laststr(pdata,len,s2,pdata1);
-//    
-//    UART1_Send_str(pdata1,len1);
-  
     uint8_t i;
-    for(i=0;i < len;i++)  //added in 11.10  13:38
+    if(len != 5)
     {
-      if(pdata[i]==0x04 && pdata[i+1]==my_addr && pdata[i+2]==0xff)
+      for(i=0;i < 10;i++)  //added in 11.10  13:38
       {
-        crc_value=CRC16(pdata+i,LEN1-2);
+        if(pdata[i]==0x04 && pdata[i+1]==my_addr && pdata[i+2]==0xff)
+        {
+          crc_value=CRC16(pdata+i,LEN1-2);
+          crc_low=(u8)(crc_value&0xff);
+          crc_high=(u8)((crc_value>>8)&0xff);
+          if(pdata[i+LEN1-2]==crc_low && pdata[i+LEN1-1]==crc_high)
+          {
+            reply_to_server();
+            break;
+          }  
+        }
+        else
+        {
+          //        reply_to_server();
+          //GPIO_WriteReverse(GPIOD, IN1_PIN);
+        }
+      }
+    }
+    else
+    {
+      if(pdata[0]==0x04 && pdata[1]==my_addr && pdata[2]==0xff)
+      {
+        crc_value=CRC16(pdata,LEN1-2);
         crc_low=(u8)(crc_value&0xff);
         crc_high=(u8)((crc_value>>8)&0xff);
-        if(pdata[i+LEN1-2]==crc_low && pdata[i+LEN1-1]==crc_high)
+        if(pdata[LEN1-2]==crc_low && pdata[LEN1-1]==crc_high)
         {
           reply_to_server();
+          
         }  
-      }
-      else
-      {
-        //        reply_to_server();
-        //GPIO_WriteReverse(GPIOD, IN1_PIN);
       }
     }
 }
