@@ -10,7 +10,7 @@
 #include "tim1.h"
 
 uint8_t uart1_handle_enable=0;
-uint8_t uart_rx_data[50]={0};
+uint8_t uart_rx_data[255]={0};
 uint8_t uart_rx_num=0;
 extern uint8_t LED1_execute;
 extern uint8_t bd_arm1_execute;
