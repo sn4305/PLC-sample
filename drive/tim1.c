@@ -33,7 +33,7 @@ void TIM1_ISR_handler(void)
     if(uart_rx_timeout_enable==1)
     {
         uart_rx_timeout_cnt++;
-        if(uart_rx_timeout_cnt>=uart_rx_timeout_settime || uart_rx_num > 49)
+        if(uart_rx_timeout_cnt>=uart_rx_timeout_settime || uart_rx_num > 254)
         {
             uart_rx_timeout_enable=0;
             uart_rx_timeout_cnt=0;
